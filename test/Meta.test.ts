@@ -1,5 +1,7 @@
 import {Meta} from '../src/Meta'
 
-test('basic', () => {
-  console.log('HERE!')
+test('basics', () => {
+  let keywords: ReadonlyArray<string> = ["keyword1", "keyword2"];
+  let meta = new Meta(keywords)
+  expect(meta.getKeywords()).toEqual(keywords)
 })

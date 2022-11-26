@@ -1,10 +1,11 @@
 export class Meta {
-  data: object
-  constructor(data: object) {
-    this.data = data
+  keywords: ReadonlyArray<string>
+
+  constructor(keywords: ReadonlyArray<string>) {
+    this.keywords = keywords
   }
 
-  getKeywords() : Array<string> {
-    return new Array<string>()
+  getKeywords(): ReadonlyArray<string> {
+    return this.keywords
   }
 }

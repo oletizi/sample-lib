@@ -6,7 +6,7 @@
     "sample-organize": "./sample-organize.js"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest --coverage"
   },
   "keywords": [
     "cli"
