@@ -1,11 +1,17 @@
+import {Meta} from "./Meta"
+
 export interface Sample {
+  meta: Meta
   readonly name: string
 }
 
-export class SampleClass {
+export class SampleClass implements Sample {
   readonly name: string
+  readonly meta: Meta
 
-  constructor(name: string) {
+  constructor(name: string, meta: Meta) {
     this.name = name
+    this.meta = meta
   }
+
 }
