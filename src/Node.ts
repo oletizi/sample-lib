@@ -2,6 +2,7 @@ import {Meta, NullMeta} from "./Meta"
 import {Sample} from "./Sample"
 
 export interface Node {
+  readonly name: string
   readonly meta: Meta
   readonly samples: ReadonlySet<Sample>
   readonly parent: Node
@@ -10,33 +11,31 @@ export interface Node {
 }
 
 export class NullNode implements Node {
-  readonly children: ReadonlySet<Node>
-  readonly meta: Meta
-  readonly parent: Node
-  readonly samples: ReadonlySet<Sample>
-  readonly isNull : boolean = true
+  static INSTANCE: Node = new NullNode()
+  readonly name: string = ""
+  readonly children: Set<Node> = new Set([])
+  readonly meta: Meta = NullMeta.INSTANCE
+  readonly parent: Node = this
+  readonly samples: Set<Sample> = new Set()
+  readonly isNull: boolean = true
 
-  constructor() {
-    this.children = new Set()
-    this.meta = new NullMeta()
-    this.parent = this
-    this.samples = new Set()
+  private constructor() {
   }
 }
 
-export class NodeClass implements Node {
-  readonly parent: Node
-  readonly children: ReadonlySet<Node>
-  readonly meta: Meta
-  readonly samples: ReadonlySet<Sample>
-  readonly isNull: boolean = false
+export class MutableNode implements Node {
+  parent: Node
+  children: Set<Node>
+  meta: Meta
+  samples: Set<Sample>
+  isNull: boolean = false
+  name: string
 
-  constructor(parent: Node, children: ReadonlySet<Node>, meta: Meta, samples: ReadonlySet<Sample>) {
-    this.parent = parent
-    this.children = children
-    this.meta = meta
-    this.samples = samples
+  public constructor(name?: string, parent?: Node, children?: Set<Node>, meta?: Meta, samples?: Set<Sample>) {
+    this.parent = parent === undefined ? NullNode.INSTANCE : parent
+    this.children = children === undefined ? new Set() : children
+    this.name = name === undefined ? "" : name
+    this.meta = meta === undefined ? NullMeta.INSTANCE : meta
+    this.samples = samples === undefined ? new Set() : samples
   }
-
-
 }

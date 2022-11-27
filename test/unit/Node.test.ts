@@ -1,5 +1,5 @@
 import {Meta, NullMeta} from "../../src/Meta"
-import {Node, NodeClass, NullNode} from "../../src/Node"
+import {Node, MutableNode, NullNode} from "../../src/Node"
 import {Sample} from "../../src/Sample"
 
 test('Node basics', () => {
@@ -7,15 +7,22 @@ test('Node basics', () => {
     keywords: new Set([])
   }
   let sample1: Sample = {
-    meta: new NullMeta(),
+    meta: NullMeta.INSTANCE,
     name: "Sample 1"
   }
 
-  let parent: Node = {children: new Set(), parent: new NullNode(), meta: new NullMeta(), samples: new Set(), isNull: false}
+  let parent: Node = {
+    name: "parent name",
+    children: new Set(),
+    parent: NullNode.INSTANCE,
+    meta: NullMeta.INSTANCE,
+    samples: new Set(),
+    isNull: false
+  }
 
-  let samples: ReadonlySet<Sample> = new Set([sample1])
-  let children: ReadonlySet<Node> = new Set([])
-  let node = new NodeClass(parent, children, nodeMeta, samples)
+  let samples: Set<Sample> = new Set([sample1])
+  let children: Set<Node> = new Set([])
+  let node: Node = new MutableNode("node name", parent, children, nodeMeta, samples)
   expect(node.meta).toEqual(nodeMeta)
   expect(node.samples).toEqual(samples)
 })

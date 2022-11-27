@@ -5,7 +5,7 @@ export interface Sample {
   readonly name: string
 }
 
-export class SampleClass implements Sample {
+export class ImmutableSample implements Sample {
   readonly name: string
   readonly meta: Meta
 
