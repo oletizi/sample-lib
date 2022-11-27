@@ -1,4 +1,4 @@
-import {MetaClass} from "../src/Meta"
+import {MetaClass} from "../../src/Meta"
 
 test('Meta basics', () => {
   let keywords: ReadonlySet<string> = new Set(["keyword1", "keyword2"])

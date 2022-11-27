@@ -6,6 +6,7 @@ export interface Node {
   readonly samples: ReadonlySet<Sample>
   readonly parent: Node
   readonly children: ReadonlySet<Node>
+  readonly isNull: boolean
 }
 
 export class NullNode implements Node {
@@ -13,6 +14,8 @@ export class NullNode implements Node {
   readonly meta: Meta
   readonly parent: Node
   readonly samples: ReadonlySet<Sample>
+  readonly isNull : boolean = true
+
   constructor() {
     this.children = new Set()
     this.meta = new NullMeta()
@@ -26,6 +29,7 @@ export class NodeClass implements Node {
   readonly children: ReadonlySet<Node>
   readonly meta: Meta
   readonly samples: ReadonlySet<Sample>
+  readonly isNull: boolean = false
 
   constructor(parent: Node, children: ReadonlySet<Node>, meta: Meta, samples: ReadonlySet<Sample>) {
     this.parent = parent

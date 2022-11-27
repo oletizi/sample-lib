@@ -1,6 +1,6 @@
-import {Meta, NullMeta} from "../src/Meta"
-import {Node, NodeClass, NullNode} from "../src/Node"
-import {Sample} from "../src/Sample"
+import {Meta, NullMeta} from "../../src/Meta"
+import {Node, NodeClass, NullNode} from "../../src/Node"
+import {Sample} from "../../src/Sample"
 
 test('Node basics', () => {
   let nodeMeta: Meta = {
@@ -11,7 +11,7 @@ test('Node basics', () => {
     name: "Sample 1"
   }
 
-  let parent: Node = {children: new Set(), parent: new NullNode(), meta: new NullMeta(), samples: new Set()}
+  let parent: Node = {children: new Set(), parent: new NullNode(), meta: new NullMeta(), samples: new Set(), isNull: false}
 
   let samples: ReadonlySet<Sample> = new Set([sample1])
   let children: ReadonlySet<Node> = new Set([])
