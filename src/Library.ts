@@ -1,7 +1,10 @@
-class Library {
-  root: string
-  
-  constructor(root: string) {
-    this.root = root
+import {Node} from "./Node";
+
+export class Library {
+  private readonly nodes: ReadonlyArray<Node>
+
+  constructor(nodes: ReadonlyArray<Node>) {
+    this.nodes = nodes
   }
 }
+

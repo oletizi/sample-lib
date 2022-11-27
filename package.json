@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "CLI to organize a sample library.",
   "bin": {
-    "sample-organize": "./sample-organize.js"
+    "sample-organize": "sample-library.js"
   },
   "scripts": {
     "test": "jest --coverage"
