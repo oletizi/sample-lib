@@ -10,7 +10,7 @@ export interface DataSource {
 
 export class FilesystemDataSource implements DataSource {
   async readNode(identifier: string): Promise<Node> {
-    const supportedTypes = ['aiff', 'aif', 'wav', 'mp3', 'm4a', 'flac']
+    const supportedTypes: ReadonlySet<string> = new Set(['.aiff', '.aif', '.wav', '.mp3', '.m4a', '.flac'])
     const rootNode = new MutableNode(identifier)
     const nodes: MutableNode[] = [rootNode]
     let currentNode: MutableNode | undefined
@@ -21,8 +21,9 @@ export class FilesystemDataSource implements DataSource {
         // examine each item in the directory
         const filename = files[i]
         const fullpath = path.join(currentNode.name, filename)
-        let basename = path.basename(filename)
-        let stats = await fs.promises.lstat(fullpath)
+        const basename = path.basename(filename)
+        const extname = path.extname(basename)
+        const stats = await fs.promises.lstat(fullpath)
         if (stats.isDirectory()) {
           // this is a subdirectory
           const child = new MutableNode()
@@ -33,7 +34,7 @@ export class FilesystemDataSource implements DataSource {
           const m = JSON.parse((await fs.promises.readFile(fullpath)).toString())
 
           currentNode.meta = new ImmutableMeta(new Set(m.keywords))
-        } else if (supportedTypes.includes(path.extname(basename))) {
+        } else if (supportedTypes.has(extname)) {
           // this is a supported audio file
           currentNode.samples.add(new ImmutableSample(fullpath, NullMeta.INSTANCE))
         }

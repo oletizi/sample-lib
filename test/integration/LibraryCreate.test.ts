@@ -20,4 +20,9 @@ test('FilesystemDataSource basics', async () =>{
   expect(keywords.size).toBe(2)
   expect(keywords.has('keyword1')).toBeTruthy()
   expect(keywords.has('keyword2')).toBeTruthy()
+
+  //check the samples
+  const samples = node.samples
+  expect(samples).toBeDefined()
+  expect(samples.size).toBe(2)
 })
