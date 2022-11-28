@@ -15,5 +15,9 @@ test('FilesystemDataSource basics', async () =>{
   // check the metadata
   const meta = node.meta
   expect(meta).toBeDefined()
-  //expect(meta.keywords.size).toBe(2)
+  const keywords = meta.keywords
+  expect(keywords).toBeDefined()
+  expect(keywords.size).toBe(2)
+  expect(keywords.has('keyword1')).toBeTruthy()
+  expect(keywords.has('keyword2')).toBeTruthy()
 })

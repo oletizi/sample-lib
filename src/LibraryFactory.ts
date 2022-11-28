@@ -1,6 +1,6 @@
 import * as fs from 'fs'
 import path from "path"
-import {Node, MutableNode} from "./Node"
+import {MutableNode, Node} from "./Node"
 import {ImmutableMeta, NullMeta} from "./Meta"
 import {ImmutableSample} from "./Sample"
 
@@ -31,7 +31,8 @@ export class FilesystemDataSource implements DataSource {
         } else if (basename === 'meta.json') {
           // this is a metadata file
           const m = JSON.parse((await fs.promises.readFile(fullpath)).toString())
-          currentNode.meta = new ImmutableMeta(m.keywords)
+
+          currentNode.meta = new ImmutableMeta(new Set(m.keywords))
         } else if (supportedTypes.includes(path.extname(basename))) {
           // this is a supported audio file
           currentNode.samples.add(new ImmutableSample(fullpath, NullMeta.INSTANCE))
