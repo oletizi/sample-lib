@@ -4,7 +4,8 @@ import {Sample} from "../../src/Sample"
 
 test('Node basics', () => {
   let nodeMeta: Meta = {
-    keywords: new Set([])
+    keywords: new Set([]),
+    isNull: false
   }
   let sample1: Sample = {
     meta: NullMeta.INSTANCE,
@@ -25,4 +26,14 @@ test('Node basics', () => {
   let node: Node = new MutableNode("node name", parent, children, nodeMeta, samples)
   expect(node.meta).toEqual(nodeMeta)
   expect(node.samples).toEqual(samples)
+})
+
+test('MutableNode undefined parameters in constructor', () => {
+  const node: MutableNode = new MutableNode()
+  expect (node.name === "")
+  expect(node.meta.isNull).toBeTruthy()
+  expect(node.samples.size).toBe(0)
+  expect(node.children.size).toBe(0)
+  expect(node.parent.isNull).toBeTruthy()
+  expect(node.isNull).toBeFalsy()
 })

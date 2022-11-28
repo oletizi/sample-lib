@@ -26,8 +26,9 @@ export class FilesystemDataSource implements DataSource {
         const stats = await fs.promises.lstat(fullpath)
         if (stats.isDirectory()) {
           // this is a subdirectory
-          const child = new MutableNode()
+          const child = new MutableNode(fullpath)
           child.parent = currentNode
+          currentNode.children.add(child)
           nodes.push(child)
         } else if (basename === 'meta.json') {
           // this is a metadata file
