@@ -1,3 +1,3 @@
-# Sample Library
+# Sample Library Manager
 
-Doesn't do anything yet.
+Doesn't do much yet.
