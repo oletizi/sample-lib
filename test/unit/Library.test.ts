@@ -1,7 +1,12 @@
-import {ImmutableMeta} from "../../src/Meta"
+import {Library} from "../../src/Library"
+import {mock} from 'jest-mock-extended'
+import {Node} from "../../src/Node"
 
-test('Meta basics', () => {
-  let keywords: ReadonlySet<string> = new Set(["keyword1", "keyword2"])
-  let meta = new ImmutableMeta(keywords)
-  expect(meta.keywords).toEqual(keywords)
+
+test('Library basics.', () => {
+  const name: string = 'the name'
+  const node = mock<Node>()
+  const lib = new Library(name, node)
+  expect(lib.name).toEqual(name)
+
 })

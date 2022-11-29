@@ -1,10 +1,12 @@
 import {Node} from "./Node";
 
 export class Library {
-  private readonly nodes: ReadonlyArray<Node>
+  private readonly root: Node
+  name: string
 
-  constructor(nodes: ReadonlyArray<Node>) {
-    this.nodes = nodes
+  constructor(name: string, root: Node) {
+    this.name = name
+    this.root = root
   }
 }
 
