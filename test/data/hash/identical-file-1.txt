@@ -1,0 +1,1 @@
+I'm identical content found in two files with different names: identical-file-1.txt and identical-file-2.txt
