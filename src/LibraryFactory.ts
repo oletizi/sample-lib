@@ -6,13 +6,20 @@ import {ImmutableSample} from "./Sample"
 import ffprobe, {FFProbeStream} from "ffprobe"
 import ffprobeStatic from "ffprobe-static"
 import {ImmutableMediaStreamMeta, ImmutableSampleMeta, MediaStreamMeta} from "./SampleMeta"
+import {ImmutableLibrary, Library} from "./Library"
 
-export interface DataSource {
-  readNode(identifier: string): void
+export class FileLibraryFactory {
+  async newLibrary(name: string, rootPath: string): Promise<Library> {
+    return new ImmutableLibrary(name, await new FilesystemDataSource().loadNode(rootPath))
+  }
 }
 
-export class FilesystemDataSource implements DataSource {
-  async readNode(identifier: string): Promise<Node> {
+interface DataSource {
+  loadNode(identifier: string): void
+}
+
+class FilesystemDataSource implements DataSource {
+  async loadNode(identifier: string): Promise<Node> {
     const supportedTypes: ReadonlySet<string> = new Set(['.aiff', '.aif', '.wav', '.mp3', '.m4a', '.flac'])
     const rootNode = new MutableNode(identifier)
     const nodes: MutableNode[] = [rootNode]

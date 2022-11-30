@@ -1,14 +1,16 @@
-import {FilesystemDataSource} from "../../src/LibraryFactory"
 import {Node} from "../../src/Node"
 import {MediaStreamMeta, SampleMeta} from "../../src/SampleMeta"
+import {FileLibraryFactory} from "../../src/LibraryFactory"
+
+
+async function loadTestLibrary(path: string) {
+  return await new FileLibraryFactory().newLibrary("My Library", path)
+}
 
 test('FilesystemDataSource single-level integration test', async () => {
   // test a one-level library
-  const root = 'test/data/library/one-level'
-  const ds = new FilesystemDataSource()
-
-  const node: Node = await ds.readNode(root)
-
+  const library = await loadTestLibrary('test/data/library/one-level')
+  const node = library.root
   // check the node
   expect(node).toBeDefined()
   expect(node.isNull).toBeFalsy()
@@ -42,11 +44,8 @@ test('FilesystemDataSource single-level integration test', async () => {
 })
 
 test('FilesystemDataSource multi-level integration test', async () => {
-  const root = 'test/data/library/multi-level'
-  const ds = new FilesystemDataSource()
-
-  const node: Node = await ds.readNode(root)
-
+  const library = await loadTestLibrary('test/data/library/multi-level')
+  const node: Node = library.root
   expect(node).toBeDefined()
   expect(node.children).toBeDefined()
 
