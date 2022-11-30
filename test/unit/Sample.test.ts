@@ -1,10 +1,10 @@
 import {Sample, ImmutableSample} from "../../src/Sample"
-import {Meta, NullMeta} from "../../src/Meta"
+import {NodeMeta, NullMeta} from "../../src/NodeMeta"
 
 test('Sample basics', () => {
   const samplePath: string = "path/to/the/sample"
   const sampleName = "sample name"
-  const meta: Meta = NullMeta.INSTANCE
+  const meta: NodeMeta = NullMeta.INSTANCE
 
   const sample: Sample = new ImmutableSample(samplePath, sampleName, meta)
   expect(sample.name).toEqual(sampleName)

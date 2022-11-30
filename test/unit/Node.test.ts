@@ -1,10 +1,10 @@
-import {Meta, NullMeta} from "../../src/Meta"
+import {NodeMeta, NullMeta} from "../../src/NodeMeta"
 import {Node, MutableNode, NullNode} from "../../src/Node"
 import {Sample} from "../../src/Sample"
 import {mock} from "jest-mock-extended"
 
 test('Node basics', () => {
-  let nodeMeta: Meta = {
+  let nodeMeta: NodeMeta = {
     keywords: new Set([]),
     isNull: false
   }

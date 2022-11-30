@@ -1,7 +1,7 @@
 import * as fs from 'fs'
 import path from "path"
 import {MutableNode, Node} from "./Node"
-import {ImmutableMeta, NullMeta} from "./Meta"
+import {ImmutableMeta, NullMeta} from "./NodeMeta"
 import {ImmutableSample} from "./Sample"
 
 export interface DataSource {
