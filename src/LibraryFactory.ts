@@ -37,7 +37,7 @@ export class FilesystemDataSource implements DataSource {
           currentNode.meta = new ImmutableMeta(new Set(m.keywords))
         } else if (supportedTypes.has(extname)) {
           // this is a supported audio file
-          currentNode.samples.add(new ImmutableSample(fullpath, NullMeta.INSTANCE))
+          currentNode.samples.add(new ImmutableSample(fullpath, basename, NullMeta.INSTANCE))
         }
       }
     }

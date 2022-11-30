@@ -1,16 +1,15 @@
 import {Meta, NullMeta} from "../../src/Meta"
 import {Node, MutableNode, NullNode} from "../../src/Node"
 import {Sample} from "../../src/Sample"
+import {mock} from "jest-mock-extended"
 
 test('Node basics', () => {
   let nodeMeta: Meta = {
     keywords: new Set([]),
     isNull: false
   }
-  let sample1: Sample = {
-    meta: NullMeta.INSTANCE,
-    name: "Sample 1"
-  }
+
+  const sample1: Sample = mock<Sample>()
 
   let parent: Node = {
     name: "parent name",

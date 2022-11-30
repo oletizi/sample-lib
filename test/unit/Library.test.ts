@@ -8,5 +8,4 @@ test('Library basics.', () => {
   const node = mock<Node>()
   const lib = new Library(name, node)
   expect(lib.name).toEqual(name)
-
 })
