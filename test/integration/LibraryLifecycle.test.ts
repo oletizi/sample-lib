@@ -2,10 +2,21 @@ import {Node} from "../../src/Node"
 import {MediaStreamMeta, SampleMeta} from "../../src/SampleMeta"
 import {FileLibraryFactory} from "../../src/LibraryFactory"
 
-
 async function loadTestLibrary(path: string) {
-  return await new FileLibraryFactory().newLibrary("My Library", path)
+  return await new FileLibraryFactory().newLibrary(path, "My Library")
 }
+
+// test('Copy and save library integration test.', async () => {
+//   const sourceLibrary = await loadTestLibrary('test/data/library/multi-level')
+//   const destPath = 'build/data/library/multi-level'
+//   expect(sourceLibrary).toBeDefined()
+//
+//   const destLibrary = await sourceLibrary.copy(destPath)
+//   expect(destLibrary).toBeDefined()
+//
+//   const loadedLibrary = await loadTestLibrary(destPath)
+//   expect(loadedLibrary).toBeDefined()
+// })
 
 test('FilesystemDataSource single-level integration test', async () => {
   // test a one-level library

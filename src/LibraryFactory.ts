@@ -9,7 +9,7 @@ import {ImmutableMediaStreamMeta, ImmutableSampleMeta, MediaStreamMeta} from "./
 import {ImmutableLibrary, Library} from "./Library"
 
 export class FileLibraryFactory {
-  async newLibrary(name: string, rootPath: string): Promise<Library> {
+  async newLibrary(rootPath: string, name: string): Promise<Library> {
     return new ImmutableLibrary(name, await new FilesystemDataSource().loadNode(rootPath))
   }
 }
@@ -21,22 +21,22 @@ interface DataSource {
 class FilesystemDataSource implements DataSource {
   async loadNode(identifier: string): Promise<Node> {
     const supportedTypes: ReadonlySet<string> = new Set(['.aiff', '.aif', '.wav', '.mp3', '.m4a', '.flac'])
-    const rootNode = new MutableNode(identifier)
+    const rootNode = new MutableNode(identifier, path.basename(identifier))
     const nodes: MutableNode[] = [rootNode]
     let currentNode: MutableNode | undefined
 
     while ((currentNode = nodes.shift()) !== undefined) {
-      const files = await fs.promises.readdir(currentNode.name)
+      const files = await fs.promises.readdir(currentNode.path)
       for (let i = 0; i < files.length; i++) {
         // examine each item in the directory
         const filename = files[i]
-        const fullpath = path.join(currentNode.name, filename)
+        const fullpath = path.join(currentNode.path, filename)
         const basename = path.basename(filename)
         const extname = path.extname(basename)
         const stats = await fs.promises.lstat(fullpath)
         if (stats.isDirectory()) {
           // this is a subdirectory
-          const child = new MutableNode(fullpath)
+          const child = new MutableNode(fullpath, basename)
           child.parent = currentNode
           currentNode.children.add(child)
           nodes.push(child)
