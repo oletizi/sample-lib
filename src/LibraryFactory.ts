@@ -1,8 +1,11 @@
 import * as fs from 'fs'
 import path from "path"
 import {MutableNode, Node} from "./Node"
-import {ImmutableMeta, NullMeta} from "./NodeMeta"
+import {ImmutableNodeMeta} from "./NodeMeta"
 import {ImmutableSample} from "./Sample"
+import ffprobe, {FFProbeStream} from "ffprobe"
+import ffprobeStatic from "ffprobe-static"
+import {ImmutableMediaStreamMeta, ImmutableSampleMeta, MediaStreamMeta} from "./SampleMeta"
 
 export interface DataSource {
   readNode(identifier: string): void
@@ -34,10 +37,19 @@ export class FilesystemDataSource implements DataSource {
           // this is a metadata file
           const m = JSON.parse((await fs.promises.readFile(fullpath)).toString())
 
-          currentNode.meta = new ImmutableMeta(new Set(m.keywords))
+          currentNode.meta = new ImmutableNodeMeta(new Set(m.keywords))
         } else if (supportedTypes.has(extname)) {
           // this is a supported audio file
-          currentNode.samples.add(new ImmutableSample(fullpath, basename, NullMeta.INSTANCE))
+          const keywords = new Set<string>()
+          const streams = new Array<MediaStreamMeta>()
+          const info = await ffprobe(fullpath, {path: ffprobeStatic.path})
+          for (let i = 0; i < info.streams.length; i++) {
+            const ffstream: FFProbeStream = info.streams[i]
+            const stream = new ImmutableMediaStreamMeta(ffstream)
+            streams.push(stream)
+          }
+          const sampleMeta = new ImmutableSampleMeta(keywords, streams)
+          currentNode.samples.add(new ImmutableSample(fullpath, basename, sampleMeta))
         }
       }
     }

@@ -16,5 +16,4 @@ export class ImmutableSample implements Sample {
     this.name = name
     this.meta = meta
   }
-
 }

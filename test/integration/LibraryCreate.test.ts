@@ -1,12 +1,13 @@
 import {FilesystemDataSource} from "../../src/LibraryFactory"
 import {Node} from "../../src/Node"
+import {MediaStreamMeta, SampleMeta} from "../../src/SampleMeta"
 
-test('FilesystemDataSource single-level integration test', async () =>{
+test('FilesystemDataSource single-level integration test', async () => {
   // test a one-level library
   const root = 'test/data/library/one-level'
   const ds = new FilesystemDataSource()
 
-  const node : Node = await ds.readNode(root)
+  const node: Node = await ds.readNode(root)
 
   // check the node
   expect(node).toBeDefined()
@@ -26,15 +27,25 @@ test('FilesystemDataSource single-level integration test', async () =>{
   expect(samples).toBeDefined()
   expect(samples.size).toBe(2)
   for (const sample of samples) {
-    expect(sample.meta).toBeDefined()
+    const sampleMeta: SampleMeta = sample.meta
+    expect(sampleMeta).toBeDefined()
+
+    const streams = sampleMeta.streams
+    expect(streams.length).toBe(1)
+
+    let stream: MediaStreamMeta = streams[0]
+    expect(stream.codecType).toBe("audio")
+    expect(stream.bitsPerSample).toBe(16)
+    expect(stream.channels).toBe(1)
+    expect(stream.sampleRate).toBe("44100")
   }
 })
 
-test ('FilesystemDataSource multi-level integration test', async () =>{
+test('FilesystemDataSource multi-level integration test', async () => {
   const root = 'test/data/library/multi-level'
   const ds = new FilesystemDataSource()
 
-  const node : Node = await ds.readNode(root)
+  const node: Node = await ds.readNode(root)
 
   expect(node).toBeDefined()
   expect(node.children).toBeDefined()
@@ -51,27 +62,3 @@ test ('FilesystemDataSource multi-level integration test', async () =>{
     }
   }
 })
-
-// {
-//   streams: [
-//     {
-//       index: 0,
-//       codec_name: 'pcm_s16le',
-//       codec_long_name: 'PCM signed 16-bit little-endian',
-//       codec_type: 'audio',
-//       codec_tag_string: '[1][0][0][0]',
-//       codec_tag: '0x0001',
-//       sample_fmt: 's16',
-//       sample_rate: '44100',
-//       channels: 1,
-//       bits_per_sample: 16,
-//       r_frame_rate: '0/0',
-//       avg_frame_rate: '0/0',
-//       time_base: '1/44100',
-//       duration_ts: 3557,
-//       duration: '0.080658',
-//       bit_rate: '705600',
-//       disposition: [Object]
-//     }
-//   ]
-// }

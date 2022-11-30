@@ -13,7 +13,7 @@ export class NullMeta implements NodeMeta {
   }
 }
 
-export class ImmutableMeta implements NodeMeta {
+export class ImmutableNodeMeta implements NodeMeta {
   readonly keywords: ReadonlySet<string>
   readonly isNull: boolean = true
 
