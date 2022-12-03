@@ -4,8 +4,9 @@ import {Sample} from "../../src/Sample"
 import {mock} from "jest-mock-extended"
 import {DataSource} from "../../src/LibraryFactory"
 
-test('NullNode copy', async () => {
+test('NullNode copy and move', async () => {
   expect(await NullNode.INSTANCE.copy('nonsense', NullNode.INSTANCE)).toBe(NullNode.INSTANCE)
+  expect(await NullNode.INSTANCE.move('nonsense', NullNode.INSTANCE)).toBe(NullNode.INSTANCE)
 })
 
 test('Node copy', async () => {
