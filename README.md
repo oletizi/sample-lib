@@ -7,4 +7,6 @@ Currently extremely simple. Supports:
 * Copying a library (or subdirectory of a library) from one directory to another
 * Moving a library (or subdirectory of a library) from one directory or another
 
+Do github actions work automatically yet?
+
 [![<ORG_NAME>](https://circleci.com/gh/oletizi/sample-library-manager/tree/main.svg?style=svg)](https://circleci.com/gh/oletizi/sample-library-manager?branch=main)
