@@ -1,6 +1,6 @@
-import * as fs from 'fs'
+import * as fs from 'fs-extra'
 import path from "path"
-import {MutableNode, Node} from "./Node"
+import {MutableNode, Node, NullNode} from "./Node"
 import {ImmutableNodeMeta} from "./NodeMeta"
 import {ImmutableSample} from "./Sample"
 import ffprobe, {FFProbeStream} from "ffprobe"
@@ -10,22 +10,23 @@ import {ImmutableLibrary, Library} from "./Library"
 
 export class FileLibraryFactory {
   async newLibrary(rootPath: string, name: string): Promise<Library> {
-    return new ImmutableLibrary(name, await new FilesystemDataSource().loadNode(rootPath))
+    return new ImmutableLibrary(name, await new FilesystemDataSource().loadNode(rootPath, NullNode.INSTANCE))
   }
 }
 
 export interface DataSource {
-  loadNode(source: string): Promise<Node>
+  loadNode(source: string, parent: Node): Promise<Node>
 
-  copyNode(source: string, dest: string): void
+  copyNode(source: string, dest: string, parent: Node): Promise<Node>
 }
 
 class FilesystemDataSource implements DataSource {
-  async copyNode(source: string, dest: string) {
-    throw new Error("Implement Me!")
+  async copyNode(source: string, dest: string, parent: Node): Promise<Node> {
+    await fs.copy(source, dest)
+    return await this.loadNode(dest, parent)
   }
 
-  async loadNode(sourcePath: string): Promise<Node> {
+  async loadNode(sourcePath: string, parent: Node): Promise<Node> {
     const supportedTypes: ReadonlySet<string> = new Set(['.aiff', '.aif', '.wav', '.mp3', '.m4a', '.flac'])
     const rootNode = new MutableNode({
       dataSource: this, path: sourcePath, name: path.basename(sourcePath)

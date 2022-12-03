@@ -1,22 +1,43 @@
-import {Node} from "../../src/Node"
+import {Node, NullNode} from "../../src/Node"
 import {MediaStreamMeta, SampleMeta} from "../../src/SampleMeta"
 import {FileLibraryFactory} from "../../src/LibraryFactory"
+import {Library} from "../../src/Library"
+import * as fs from "fs-extra"
+import path from "path"
 
-async function loadTestLibrary(path: string) {
+let tmp: string
+beforeEach(async () => {
+  tmp = await fs.promises.mkdtemp('LibraryLifecycleTest')
+})
+
+afterEach(async () => {
+  await fs.remove(tmp)
+})
+
+async function loadTestLibrary(path: string): Promise<Library> {
   return await new FileLibraryFactory().newLibrary(path, "My Library")
 }
 
-// test('Copy and save library integration test.', async () => {
-//   const sourceLibrary = await loadTestLibrary('test/data/library/multi-level')
-//   const destPath = 'build/data/library/multi-level'
-//   expect(sourceLibrary).toBeDefined()
-//
-//   const destLibrary = await sourceLibrary.copy(destPath)
-//   expect(destLibrary).toBeDefined()
-//
-//   const loadedLibrary = await loadTestLibrary(destPath)
-//   expect(loadedLibrary).toBeDefined()
-// })
+async function compareFileContents(aPath: string, bPath: string): Promise<number> {
+  return (await fs.promises.readFile(aPath)).compare(await fs.promises.readFile(bPath))
+}
+
+test('Copy node integration test', async () => {
+  const sourcePath = 'test/data/library/multi-level'
+  const destPath = path.join(tmp, 'intermediatePath', 'multi-level')
+  const library = await loadTestLibrary(sourcePath)
+  const sourceRootNode: Node = library.root
+  const copied = await sourceRootNode.copy(destPath, NullNode.INSTANCE)
+  expect(copied).toBeDefined()
+  expect(copied.path).toBe(destPath)
+  expect(copied.path).not.toBe(sourceRootNode.path)
+  // ???: Maybe recursively test each file. But, that's really just testing the filesystem library
+  // Spot-testing is probably just as good
+  expect(await compareFileContents(path.join(sourcePath, 'meta.json'), path.join(destPath, 'meta.json'))).toBe(0)
+  expect(await compareFileContents(
+    path.join(sourcePath, 'level-2a', 'kick.wav'),
+    path.join(destPath, 'level-2a', 'kick.wav')))
+})
 
 test('FilesystemDataSource single-level integration test', async () => {
   // test a one-level library
