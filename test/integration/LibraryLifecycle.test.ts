@@ -22,6 +22,20 @@ async function compareFileContents(aPath: string, bPath: string): Promise<number
   return (await fs.promises.readFile(aPath)).compare(await fs.promises.readFile(bPath))
 }
 
+test('Move node integration test', async () => {
+  let testLibPath = 'test/data/library/multi-level'
+  const library = await loadTestLibrary(testLibPath)
+  const sourcePath = path.join(tmp, 'source')
+  const destPath = path.join(tmp, 'dest')
+  const sourceNode = await library.root.copy(sourcePath, NullNode.INSTANCE)
+  expect(fs.existsSync(sourcePath)).toBeTruthy()
+
+  const destNode = await sourceNode.move(destPath, NullNode.INSTANCE)
+  expect(destNode).toBeDefined()
+  expect(fs.existsSync(sourcePath)).toBeFalsy()
+  expect(await compareFileContents(path.join(testLibPath, 'level-2a', 'meta.json'), path.join(destPath, 'level-2a', 'meta.json'))).toBe(0)
+})
+
 test('Copy node integration test', async () => {
   const sourcePath = 'test/data/library/multi-level'
   const destPath = path.join(tmp, 'intermediatePath', 'multi-level')

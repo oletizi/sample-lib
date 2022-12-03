@@ -18,11 +18,18 @@ export interface DataSource {
   loadNode(source: string, parent: Node): Promise<Node>
 
   copyNode(source: string, dest: string, parent: Node): Promise<Node>
+
+  moveNode(source: string, destination: string, parent: Node): Promise<Node>
 }
 
 class FilesystemDataSource implements DataSource {
   async copyNode(source: string, dest: string, parent: Node): Promise<Node> {
     await fs.copy(source, dest)
+    return await this.loadNode(dest, parent)
+  }
+
+  async moveNode(source: string, dest: string, parent: Node): Promise<Node> {
+    await fs.move(source, dest)
     return await this.loadNode(dest, parent)
   }
 

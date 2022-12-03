@@ -12,6 +12,7 @@ export interface Node {
   readonly isNull: boolean
 
   copy(destPath: string, destParent: Node): Promise<Node>
+  move(destPath: string, destParent: Node): Promise<Node>
 }
 
 export class NullNode implements Node {
@@ -24,11 +25,15 @@ export class NullNode implements Node {
   readonly samples: Set<Sample> = new Set()
   readonly isNull: boolean = true
 
+  private constructor() {
+  }
+
   async copy(path: string, parent: Node): Promise<Node> {
     return this
   }
 
-  private constructor() {
+  async move(destPath: string, destParent: Node): Promise<Node> {
+    return this
   }
 }
 
@@ -54,6 +59,10 @@ export class MutableNode implements Node {
 
   public async copy(destination: string, parent: Node): Promise<Node> {
     return this.dataSource.copyNode(this.path, destination, parent)
+  }
+
+  public async move(destination: string, parent: Node): Promise<Node> {
+    return this.dataSource.moveNode(this.path, destination, parent)
   }
 
   public constructor({
