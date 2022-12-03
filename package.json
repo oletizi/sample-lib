@@ -1,17 +1,16 @@
 {
-  "name": "sample-organize",
+  "name": "@oletizi/sample-library-manager",
   "version": "1.0.0",
-  "description": "CLI to organize a sample library.",
-  "bin": {
-    "sample-organize": "sample-library.js"
-  },
+  "description": "Module to manage an audio sample library.",
   "scripts": {
     "test": "jest --coverage"
   },
   "keywords": [
-    "cli"
+    "audio",
+    "sample",
+    "library"
   ],
-  "preferGlobal": true,
+  "preferGlobal": false,
   "author": "Orion Letizi",
   "license": "ISC",
   "dependencies": {
