@@ -21,7 +21,7 @@ interface DataSource {
 class FilesystemDataSource implements DataSource {
   async loadNode(identifier: string): Promise<Node> {
     const supportedTypes: ReadonlySet<string> = new Set(['.aiff', '.aif', '.wav', '.mp3', '.m4a', '.flac'])
-    const rootNode = new MutableNode(identifier, path.basename(identifier))
+    const rootNode = new MutableNode({path: identifier, name: path.basename(identifier)})
     const nodes: MutableNode[] = [rootNode]
     let currentNode: MutableNode | undefined
 
@@ -36,7 +36,7 @@ class FilesystemDataSource implements DataSource {
         const stats = await fs.promises.lstat(fullpath)
         if (stats.isDirectory()) {
           // this is a subdirectory
-          const child = new MutableNode(fullpath, basename)
+          const child = new MutableNode({path: fullpath, name: basename})
           child.parent = currentNode
           currentNode.children.add(child)
           nodes.push(child)

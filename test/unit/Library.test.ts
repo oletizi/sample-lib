@@ -4,10 +4,11 @@ import {mock} from "jest-mock-extended"
 
 test('Library copy', async () =>{
   const destPath = 'foo'
-  const rootNode: Node = mock<Node>()
-  const library = new ImmutableLibrary("the name", rootNode)
+  const sourceRootNode: Node = mock<Node>()
+  const destRootNode: Node = mock<Node>()
+  const library = new ImmutableLibrary("the name", sourceRootNode)
 
-  const destLibrary = await library.copy(destPath)
+  const destLibrary = await library.copy(destPath, destRootNode )
   expect(destLibrary.name).toBe(library.name)
-  expect(rootNode.copy).toHaveBeenCalledWith(destPath)
+  expect(sourceRootNode.copy).toHaveBeenCalledWith(destPath, destRootNode)
 })

@@ -3,7 +3,7 @@ import {Node} from "./Node";
 export interface Library {
   readonly name: string
   readonly root: Node
-  copy(destPath: string): Promise<Library>
+  copy(destPath: string, destParent: Node): Promise<Library>
 }
 
 export class ImmutableLibrary implements Library {
@@ -15,8 +15,8 @@ export class ImmutableLibrary implements Library {
     this.root = root
   }
 
-  async copy(destPath: string): Promise<Library> {
-    return new ImmutableLibrary(this.name, await this.root.copy(destPath))
+  async copy(destPath: string, destParent: Node): Promise<Library> {
+    return new ImmutableLibrary(this.name, await this.root.copy(destPath, destParent))
   }
 }
 

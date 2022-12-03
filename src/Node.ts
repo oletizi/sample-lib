@@ -11,7 +11,7 @@ export interface Node {
   readonly children: ReadonlySet<Node>
   readonly isNull: boolean
 
-  copy(path: string): Promise<Node>
+  copy(destPath: string, destParent: Node): Promise<Node>
 }
 
 export class NullNode implements Node {
@@ -24,7 +24,7 @@ export class NullNode implements Node {
   readonly samples: Set<Sample> = new Set()
   readonly isNull: boolean = true
 
-  async copy(path: string): Promise<Node> {
+  async copy(path: string, parent: Node): Promise<Node> {
     return this
   }
 
@@ -32,32 +32,57 @@ export class NullNode implements Node {
   }
 }
 
+export interface NodeParameters {
+  path: string,
+  name: string,
+  parent?: Node,
+  children?: Set<Node>,
+  meta?: NodeMeta,
+  samples?: Set<Sample>
+}
+
 export class MutableNode implements Node {
+  name: string
+  path: string
   parent: Node
   children: Set<Node>
   meta: NodeMeta
   samples: Set<Sample>
   isNull: boolean = false
-  name: string
-  path: string
 
-  async copy(destination: string): Promise<Node> {
-    const destChildren: Set<Node> = new Set();
+  async copy(destination: string, parent: Node): Promise<Node> {
+    const destChildren: Set<Node> = new Set()
+    const rv: MutableNode = new MutableNode({
+      path: destination,
+      name: this.name,
+      parent: parent,
+      children: destChildren,
+      meta: this.meta,
+      samples: this.samples
+    })
     for (const child of this.children) {
       const destPath = path.join(destination, path.basename(child.path))
       // XXX: this recursion will cause a stack overflow
-      const destChild = await child.copy(destPath)
+      const destChild = await child.copy(destPath, rv)
       destChildren.add(destChild)
     }
-    return new MutableNode(destination, this.name, this.parent, destChildren, this.meta, this.samples)
+    return rv
   }
 
-  public constructor(path: string, name: string, parent?: Node, children?: Set<Node>, meta?: NodeMeta, samples?: Set<Sample>) {
+
+  public constructor({
+                       path,
+                       name,
+                       parent = NullNode.INSTANCE,
+                       children = new Set(),
+                       meta = NullMeta.INSTANCE,
+                       samples = new Set()
+                     }: NodeParameters) {
     this.path = path
     this.name = name
-    this.parent = parent === undefined ? NullNode.INSTANCE : parent
-    this.children = children === undefined ? new Set() : children
-    this.meta = meta === undefined ? NullMeta.INSTANCE : meta
-    this.samples = samples === undefined ? new Set() : samples
+    this.parent = parent
+    this.children = children
+    this.meta = meta
+    this.samples = samples
   }
 }
