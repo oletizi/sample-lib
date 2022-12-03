@@ -3,6 +3,7 @@ import {Node, MutableNode, NullNode} from "../../src/Node"
 import {Sample} from "../../src/Sample"
 import {mock} from "jest-mock-extended"
 import path from "path"
+import {NullSampleMeta} from "../../src/SampleMeta"
 
 test('NullNode copy', async () => {
   expect(await NullNode.INSTANCE.copy('nonsense', NullNode.INSTANCE)).toBe(NullNode.INSTANCE)
@@ -22,10 +23,23 @@ test('Node deep copy', async () => {
   const subPath: string = 'subNode'
   const subSubPath: string = 'subSubNode'
 
+  const subSubSamples: Set<Sample> = new Set()
+  const sampleName: string = "the sample name"
+  const subSubSample: Sample = {
+    meta: NullSampleMeta.INSTANCE,
+    name: sampleName,
+    path: path.join(sourceRootPath, subPath, subSubPath, sampleName)
+  }
+
+
+  subSubSamples.add(subSubSample)
   // create terminal, third-level node
   const sourceSubSubNode: MutableNode = new MutableNode(
-    {path: path.join(sourceRootPath, subPath, subSubPath), name: 'Sub Sub Node'}
-  )
+    {
+      path: path.join(sourceRootPath, subPath, subSubPath),
+      name: 'Sub Sub Node',
+      samples: subSubSamples
+    })
 
   // create second-level node
   const subChildren: Set<Node> = new Set()
@@ -62,6 +76,10 @@ test('Node deep copy', async () => {
     for (const destSubSubNode of destSubNode.children) {
       thirdLevelNodes++
       expect(destSubSubNode.path).toBe(path.join(destRootPath, subPath, subSubPath))
+      expect(destSubSubNode.samples.size).toBe(1)
+      for (const sample of destSubSubNode.samples) {
+        expect(sample.path).toBe(path.join(destSubSubNode.path, sample.name))
+      }
     }
   }
 

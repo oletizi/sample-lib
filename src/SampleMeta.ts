@@ -5,6 +5,14 @@ export interface SampleMeta extends Meta {
   streams: ReadonlyArray<MediaStreamMeta>
 }
 
+export class NullSampleMeta implements SampleMeta {
+  static readonly INSTANCE: NullSampleMeta = new NullSampleMeta()
+  readonly isNull: boolean = true
+  readonly keywords: ReadonlySet<string> = new Set()
+  streams: ReadonlyArray<MediaStreamMeta> = []
+  private constructor() {}
+}
+
 export class ImmutableSampleMeta implements SampleMeta {
   readonly isNull: boolean = false
   readonly keywords: ReadonlySet<string>

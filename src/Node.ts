@@ -1,6 +1,6 @@
 import path from "path"
 import {NodeMeta, NullMeta} from "./NodeMeta"
-import {Sample} from "./Sample"
+import {ImmutableSample, Sample} from "./Sample"
 
 export interface Node {
   readonly name: string
@@ -52,14 +52,20 @@ export class MutableNode implements Node {
 
   async copy(destination: string, parent: Node): Promise<Node> {
     const destChildren: Set<Node> = new Set()
+    const destSamples: Set<Sample> = new Set()
     const rv: MutableNode = new MutableNode({
       path: destination,
       name: this.name,
       parent: parent,
       children: destChildren,
       meta: this.meta,
-      samples: this.samples
+      samples: destSamples
     })
+
+    for (const sample of this.samples) {
+      destSamples.add(new ImmutableSample(path.join(destination, sample.name), sample.name, sample.meta))
+    }
+
     for (const child of this.children) {
       const destPath = path.join(destination, path.basename(child.path))
       // XXX: this recursion will cause a stack overflow
@@ -68,7 +74,6 @@ export class MutableNode implements Node {
     }
     return rv
   }
-
 
   public constructor({
                        path,
