@@ -14,14 +14,22 @@ export class FileLibraryFactory {
   }
 }
 
-interface DataSource {
-  loadNode(identifier: string): void
+export interface DataSource {
+  loadNode(source: string): Promise<Node>
+
+  copyNode(source: string, dest: string): void
 }
 
 class FilesystemDataSource implements DataSource {
-  async loadNode(identifier: string): Promise<Node> {
+  async copyNode(source: string, dest: string) {
+    throw new Error("Implement Me!")
+  }
+
+  async loadNode(sourcePath: string): Promise<Node> {
     const supportedTypes: ReadonlySet<string> = new Set(['.aiff', '.aif', '.wav', '.mp3', '.m4a', '.flac'])
-    const rootNode = new MutableNode({path: identifier, name: path.basename(identifier)})
+    const rootNode = new MutableNode({
+      dataSource: this, path: sourcePath, name: path.basename(sourcePath)
+    })
     const nodes: MutableNode[] = [rootNode]
     let currentNode: MutableNode | undefined
 
@@ -36,7 +44,9 @@ class FilesystemDataSource implements DataSource {
         const stats = await fs.promises.lstat(fullpath)
         if (stats.isDirectory()) {
           // this is a subdirectory
-          const child = new MutableNode({path: fullpath, name: basename})
+          const child = new MutableNode({
+            dataSource: this, path: fullpath, name: basename
+          })
           child.parent = currentNode
           currentNode.children.add(child)
           nodes.push(child)

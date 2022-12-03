@@ -4,6 +4,7 @@ import {Sample} from "../../src/Sample"
 import {mock} from "jest-mock-extended"
 import path from "path"
 import {NullSampleMeta} from "../../src/SampleMeta"
+import {DataSource} from "../../src/LibraryFactory"
 
 test('NullNode copy', async () => {
   expect(await NullNode.INSTANCE.copy('nonsense', NullNode.INSTANCE)).toBe(NullNode.INSTANCE)
@@ -12,12 +13,15 @@ test('NullNode copy', async () => {
 test('Node shallow copy', async () => {
   const sourcePath: string = "sourcePath"
   const destPath: string = "destPath"
-  const sourceNode: Node = new MutableNode({path: sourcePath, name: "the name"})
+  const sourceNode: Node = new MutableNode({
+    dataSource: mock<DataSource>(), path: sourcePath, name: "the name"
+  })
   const destNode = await sourceNode.copy(destPath, NullNode.INSTANCE)
   expect(destNode.path).toBe(destPath)
 })
 
 test('Node deep copy', async () => {
+  const dataSource = mock<DataSource>()
   const sourceRootPath: string = "sourceRoot"
   const destRootPath: string = "destRoot"
   const subPath: string = 'subNode'
@@ -31,30 +35,29 @@ test('Node deep copy', async () => {
     path: path.join(sourceRootPath, subPath, subSubPath, sampleName)
   }
 
-
   subSubSamples.add(subSubSample)
   // create terminal, third-level node
-  const sourceSubSubNode: MutableNode = new MutableNode(
-    {
-      path: path.join(sourceRootPath, subPath, subSubPath),
-      name: 'Sub Sub Node',
-      samples: subSubSamples
-    })
+  const sourceSubSubNode: MutableNode = new MutableNode({
+    dataSource: dataSource,
+    path: path.join(sourceRootPath, subPath, subSubPath),
+    name: 'Sub Sub Node',
+    samples: subSubSamples
+  })
 
   // create second-level node
   const subChildren: Set<Node> = new Set()
   subChildren.add(sourceSubSubNode)
-  const sourceSubNode: MutableNode = new MutableNode(
-    {path: path.join(sourceRootPath, subPath), name: "Sub Node", children: subChildren}
-  )
+  const sourceSubNode: MutableNode = new MutableNode({
+    dataSource: dataSource, path: path.join(sourceRootPath, subPath), name: "Sub Node", children: subChildren
+  })
   sourceSubSubNode.parent = sourceSubNode
 
   // create root node
   const children: Set<Node> = new Set()
   children.add(sourceSubNode)
-  const sourceRootNode: Node = new MutableNode(
-    {path: sourceRootPath, name: "the name", parent: NullNode.INSTANCE, children: children}
-  )
+  const sourceRootNode: Node = new MutableNode({
+    dataSource: dataSource, path: sourceRootPath, name: "the name", parent: NullNode.INSTANCE, children: children
+  })
   sourceSubNode.parent = sourceRootNode
 
   // copy the root node
@@ -97,6 +100,7 @@ test('Node basics', () => {
   let children: Set<Node> = new Set([])
   let node: Node = new MutableNode(
     {
+      dataSource: mock<DataSource>(),
       path: "/path/to/node",
       name: "node name",
       parent: parent,
@@ -110,7 +114,8 @@ test('Node basics', () => {
 })
 
 test('MutableNode undefined parameters in constructor', () => {
-  const node: MutableNode = new MutableNode({path: "/path/to/node", name: "node name"})
+  const node: MutableNode = new MutableNode(
+    {dataSource: mock<DataSource>(), path: "/path/to/node", name: "node name"})
   expect(node.name === "")
   expect(node.meta.isNull).toBeTruthy()
   expect(node.samples.size).toBe(0)

@@ -1,6 +1,7 @@
 import path from "path"
 import {NodeMeta, NullMeta} from "./NodeMeta"
 import {ImmutableSample, Sample} from "./Sample"
+import {DataSource} from "./LibraryFactory"
 
 export interface Node {
   readonly name: string
@@ -33,6 +34,7 @@ export class NullNode implements Node {
 }
 
 export interface NodeParameters {
+  dataSource: DataSource,
   path: string,
   name: string,
   parent?: Node,
@@ -42,18 +44,20 @@ export interface NodeParameters {
 }
 
 export class MutableNode implements Node {
-  name: string
-  path: string
+  readonly name: string
+  readonly path: string
   parent: Node
-  children: Set<Node>
+  readonly children: Set<Node>
   meta: NodeMeta
-  samples: Set<Sample>
-  isNull: boolean = false
+  readonly samples: Set<Sample>
+  readonly isNull: boolean = false
+  private readonly dataSource: DataSource
 
-  async copy(destination: string, parent: Node): Promise<Node> {
+  public async copy(destination: string, parent: Node): Promise<Node> {
     const destChildren: Set<Node> = new Set()
     const destSamples: Set<Sample> = new Set()
     const rv: MutableNode = new MutableNode({
+      dataSource: this.dataSource,
       path: destination,
       name: this.name,
       parent: parent,
@@ -68,7 +72,7 @@ export class MutableNode implements Node {
 
     for (const child of this.children) {
       const destPath = path.join(destination, path.basename(child.path))
-      // XXX: this recursion will cause a stack overflow
+      // XXX: this recursion will cause a stack overflow... eventually.
       const destChild = await child.copy(destPath, rv)
       destChildren.add(destChild)
     }
@@ -76,6 +80,7 @@ export class MutableNode implements Node {
   }
 
   public constructor({
+                       dataSource,
                        path,
                        name,
                        parent = NullNode.INSTANCE,
@@ -83,6 +88,7 @@ export class MutableNode implements Node {
                        meta = NullMeta.INSTANCE,
                        samples = new Set()
                      }: NodeParameters) {
+    this.dataSource = dataSource
     this.path = path
     this.name = name
     this.parent = parent
