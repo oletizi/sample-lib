@@ -1,4 +1,5 @@
 module.exports = {
+  modulePathIgnorePatterns: ["<rootDir>/dist/"],
   "roots": [
     "./test"
 

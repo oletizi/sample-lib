@@ -8,7 +8,7 @@ import ffprobeStatic from "ffprobe-static"
 import {ImmutableMediaStreamMeta, ImmutableSampleMeta, MediaStreamMeta} from "./SampleMeta"
 import {ImmutableLibrary, Library} from "./Library"
 
-export class FileLibraryFactory {
+export class FilesystemLibraryFactory {
   async newLibrary(rootPath: string, name: string): Promise<Library> {
     return new ImmutableLibrary(name, await new FilesystemDataSource().loadNode(rootPath, NullNode.INSTANCE))
   }

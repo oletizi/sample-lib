@@ -1,6 +1,6 @@
 import {Node, NullNode} from "../../src/Node"
 import {MediaStreamMeta, SampleMeta} from "../../src/SampleMeta"
-import {FileLibraryFactory} from "../../src/LibraryFactory"
+import {FilesystemLibraryFactory} from "../../src/LibraryFactory"
 import {Library} from "../../src/Library"
 import * as fs from "fs-extra"
 import path from "path"
@@ -15,7 +15,7 @@ afterEach(async () => {
 })
 
 async function loadTestLibrary(path: string): Promise<Library> {
-  return await new FileLibraryFactory().newLibrary(path, "My Library")
+  return await new FilesystemLibraryFactory().newLibrary(path, "My Library")
 }
 
 async function compareFileContents(aPath: string, bPath: string): Promise<number> {
