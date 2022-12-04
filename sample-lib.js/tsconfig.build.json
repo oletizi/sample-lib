@@ -4,6 +4,6 @@
     "test",
     "jest.config.js",
     "src/**/*.spec.ts",
-    "src/**/*.test.ts",
+    "src/**/*.test.ts"
   ]
 }

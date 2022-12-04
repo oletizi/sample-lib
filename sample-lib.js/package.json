@@ -1,5 +1,5 @@
 {
-  "name": "@oletizi/sample-library-manager",
+  "name": "@oletizi/sample-lib.js",
   "version": "1.0.1",
   "description": "Module to manage an audio sample library.",
   "main": "dist/src/index.js",
@@ -7,7 +7,7 @@
   "scripts": {
     "test": "jest --coverage",
     "test-ci": "jest --ci --coverage",
-    "build": "tsc --project tsconfig.build.json",
+    "build": "npm install && tsc --project tsconfig.build.json",
     "publish": "npm run clean && npm run test-ci && npm run build && npm --access public publish",
     "clean": "rm -rf build coverage dist"
   },
